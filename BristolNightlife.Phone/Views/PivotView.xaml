@@ -1,0 +1,135 @@
+﻿<views:MvxPhonePage
+    x:Class="BristolNightlife.Phone.Views.PivotView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:Cirrious.MvvmCross.WindowsPhone.Views;assembly=Cirrious.MvvmCross.WindowsPhone"
+    xmlns:phone1="clr-namespace:BristolNightlife.Phone;assembly=BristolNightlife.Phone"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+	<UserControl.Resources>
+		<phone1:MyMockDatesClass x:Key="DesignDatesViewModel"/>
+		<phone1:VisibilityConverter x:Key="VisibilityConverter"/>
+	</UserControl.Resources>
+	
+	<Grid x:Name="LayoutRoot" Background="Transparent"
+		  d:DataContext="{Binding Source={StaticResource DesignDatesViewModel}}">
+		<Grid.RowDefinitions>
+			<RowDefinition  Height="*"/>
+			<RowDefinition Height="50" />
+		</Grid.RowDefinitions>
+		<phone:Pivot Title="Bristol Nightlife"
+					 
+					 ItemsSource="{Binding Dates}" >
+			
+			<phone:Pivot.HeaderTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding PivotItemHeader, Mode=OneWay}" />
+				</DataTemplate>
+			</phone:Pivot.HeaderTemplate>
+			<phone:Pivot.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						
+						<StackPanel 
+							Visibility="{Binding IsFailed, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" 
+							Grid.Row="0">
+							<TextBlock Text="Could not load data, tap button below to try again." Margin="20" TextWrapping="Wrap" FontSize="20" />
+							<Button Command="{Binding RetryCommand}" >Refresh</Button>
+						</StackPanel>
+						
+						<StackPanel Visibility="{Binding IsLoading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}"  
+							Grid.Row="0">
+							<TextBlock Text="Loading..." Margin="20" TextWrapping="Wrap" FontSize="20" />
+						</StackPanel>
+						
+						<ListBox  Tap="EventsName_OnTap"
+							Grid.Row="0" Margin="10" 
+								  Visibility="{Binding IsLoaded, Converter={StaticResource VisibilityConverter}, Mode=OneWay}"
+									 ItemsSource="{Binding EventSummaries}">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									
+									<Grid HorizontalAlignment="Stretch"  >
+										<Grid.RowDefinitions>
+											<RowDefinition MinHeight="60" />
+										</Grid.RowDefinitions>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="20" />
+											<ColumnDefinition Width="*" />
+										</Grid.ColumnDefinitions>
+										
+										<Rectangle Width="10" Height="50" Grid.Column="0" >
+											<Rectangle.Fill>
+												<SolidColorBrush Color="{Binding Colour}" />
+											</Rectangle.Fill>
+										</Rectangle>
+										<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="5" HorizontalAlignment="Stretch">
+											<TextBlock  
+											Text="{Binding Venue, Mode=OneWay}"   />
+											<TextBlock  Text="{Binding NameOfNight, Mode=OneWay}"  />
+										</StackPanel>
+									</Grid>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+						
+					</Grid>
+				</DataTemplate>
+			</phone:Pivot.ItemTemplate>	
+		</phone:Pivot>
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<Grid Grid.Column="0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Club night" 
+									VerticalAlignment="Center" 
+									Margin="10"	Grid.Column="0"/>
+				<Rectangle Width="40" Height="10" Grid.Column="1" >
+					<Rectangle.Fill>
+						<SolidColorBrush Color="{Binding AppBlue }" />
+					</Rectangle.Fill>
+				</Rectangle>
+			</Grid>
+			<Grid Grid.Column="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Gig" Margin="20 10 10 10" VerticalAlignment="Center" Grid.Column="0"/>
+				<Rectangle Width="40" Height="10" Grid.Column="1" >
+					<Rectangle.Fill>
+						<SolidColorBrush Color="{Binding AppGreen }" />
+					</Rectangle.Fill>
+				</Rectangle>
+			</Grid>
+			<Grid Grid.Column="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Other" Margin="20 10 10 10" VerticalAlignment="Center" Grid.Column="0"/>
+				<Rectangle Width="40" Height="10" Grid.Column="1" >
+					<Rectangle.Fill>
+						<SolidColorBrush Color="{Binding AppRed }" />
+					</Rectangle.Fill>
+				</Rectangle>
+			</Grid>
+		</Grid>
+	</Grid>
+</views:MvxPhonePage>
